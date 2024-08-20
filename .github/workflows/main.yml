@@ -26,4 +26,25 @@ jobs:
     #   with:
     #     name: bandit-scan
     #     path: badit-report.json
-    
+
+  image_scan:
+    name: Build Image and Run Image Scan
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4.1.7
+      
+    - name: Setup Docker
+      uses: docker-practice/actions-setup-docker@v1
+
+    - name: Build Docker Image
+      run: docker build -f Dockerfile -t myapp:latest .
+
+    - name: Scan Docker Scout
+      uses: docker/scout-action@v1.13.0
+      with:
+        dockerhub-user: ${{ secrets.REPO.USER}}
+        dockerhub-password: ${{ secrets.REPO.PWD}}
+        command: quickview,cves
+        
